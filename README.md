@@ -437,6 +437,42 @@ Calendarar::thisMonth()
 
 <br>
 
+### setTdTemplate(string $template)
+
+html() で出力される table.tbody.tr.td タグ内のテンプレートを変更します
+
+
+#### デフォルト値
+
+```
+{{day}}
+```
+{{day}}が数値の日付に変換されます
+
+
+#### example
+
+```php
+Calendarar::thisMonth()
+    ->setTdTemplate('<span class="bold">{{day}}</span>')
+    ->html()
+```
+
+```html
+    <tbody>
+        <tr class="week1">
+            <td class="sun"></td>
+            <td class="mon"></td>
+            <td class="tue"></td>
+            <td class="wed"><span class="bold">1</span></td>
+            <td class="thu"><span class="bold">2</span></td>
+            <td class="fri"><span class="bold">3</span></td>
+            <td class="sat"><span class="bold">4</span></td>
+        </tr>
+```
+
+<br>
+
 ### setDay(int $year, int $month, int $day, mixed $data)
 
 指定日に、$data を格納する
@@ -705,40 +741,6 @@ Calendarar::thisMonth()
 ]
 ```
 
-### setTdTemplate(string $template)
-
-html() で出力される table.tbody.tr.td タグ内のテンプレートを変更します
-
-
-#### デフォルト値
-
-```
-{{day}}
-```
-{{day}}が数値の日付に変換されます
-
-
-#### example
-
-```php
-Calendarar::thisMonth()
-    ->setTdTemplate('<span class="bold">{{day}}</span>')
-    ->html()
-```
-
-```html
-    <tbody>
-        <tr class="week1">
-            <td class="sun"></td>
-            <td class="mon"></td>
-            <td class="tue"></td>
-            <td class="wed"><span class="bold">1</span></td>
-            <td class="thu"><span class="bold">2</span></td>
-            <td class="fri"><span class="bold">3</span></td>
-            <td class="sat"><span class="bold">4</span></td>
-        </tr>
-```
-
 <br>
 
 ### set(mixed $start, mixed $end)
@@ -746,6 +748,13 @@ Calendarar::thisMonth()
 第一引数にカレンダー開始日、第二引数にカレンダー終了日を設定する
 
 ※第一引数は月初に、第二引数は月末に変換されます
+
+#### example
+```php
+// 3ヶ月分のカレンダーを設定
+Calendarar::set('2023-02-01', '2023-04-30');
+```
+
 
 <br>
 
