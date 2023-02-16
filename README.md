@@ -305,9 +305,11 @@ Calendarar::thisMonth()->create();
 Calendarar::thisMonth()->html();
 ```
 
-#### example 出力される html 2023/02
-```html
+#### example
 
+出力される html (※2023/02が設定されている場合）
+
+```html
 <table class="calendarar calendarar-202302">
     <thead>
         <tr>
@@ -399,6 +401,7 @@ Calendarar::thisMonth()
     </thead>
 ```
 
+<br>
 
 ### setTrTemplate(string $template)
 
