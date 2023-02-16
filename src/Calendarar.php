@@ -3,6 +3,8 @@
 namespace Kanagama\Calendarar;
 
 use Carbon\Carbon;
+use Kanagama\Calendarar\Consts\CalendararConst;
+use Kanagama\Calendarar\Traits\CalendarPrivateFunctionTrait;
 
 /**
  * @method array create()
@@ -43,12 +45,7 @@ use Carbon\Carbon;
  */
 final class Calendarar
 {
-    /**
-     * 週の始めが月曜日
-     *
-     * @var int
-     */
-    private const SUNDAY = 7;
+    use CalendarPrivateFunctionTrait;
 
     /**
      * 開始日
@@ -65,6 +62,27 @@ final class Calendarar
     private Carbon $endDatetime;
 
     /**
+     * 言語設定
+     *
+     * @var string
+     */
+    private string $encoding = 'ja';
+
+    /**
+     * tr テンプレート
+     *
+     * @var string
+     */
+    private string $trTemplate = CalendararConst::DAY_OF_WEEK_TEMPLATE;
+
+    /**
+     * td テンプレート
+     *
+     * @var string
+     */
+    private string $tdTemplate = CalendararConst::DAY_TEMPLATE;
+
+    /**
      * 週始めを月曜日にするか
      *
      * @var bool
@@ -77,28 +95,19 @@ final class Calendarar
     private array $dayData = [];
 
     /**
-     * @param  mixed  $start
-     * @param  mixed  $end
+     * @param  Carbon|CarbonImmutable|string|null  $start
+     * @param  Carbon|CarbonImmutable|string|null  $end
      */
-    public function __construct($start, $end)
+    public function __construct($start = null, $end = null)
     {
-        $this->startDatetime = (new Carbon($start))->subMonth()->startOfMonth();
-        $this->endDatetime   = (new Carbon($end))->subMonth()->endOfMonth();
-    }
+        if (!is_null($start)) {
+            $this->startDatetime = (new Carbon($start))->startOfMonth();
+        }
+        if (!is_null($end)) {
+            $this->endDatetime = (new Carbon($end))->endOfMonth();
+        }
 
-    /**
-     * 初期化
-     */
-    private function reset()
-    {
-        // 開始日を初期化
-        if (!$this->startDatetime instanceof Carbon) {
-            $this->resetStartDatetime();
-        }
-        // 終了日を初期化
-        if (!$this->endDatetime instanceof Carbon) {
-            $this->resetEndDatetime();
-        }
+        $this->reset();
     }
 
     /**
@@ -147,26 +156,6 @@ final class Calendarar
     }
 
     /**
-     * 開始日を初期化
-     *
-     * @return void
-     */
-    private function resetStartDatetime()
-    {
-        $this->startDatetime = Carbon::now()->startOfMonth();
-    }
-
-    /**
-     * 終了日を初期化
-     *
-     * @return void
-     */
-    private function resetEndDatetime()
-    {
-        $this->endDatetime = Carbon::now()->endOfMonth();
-    }
-
-    /**
      * 開始月と終了月を設定する
      *
      * @param  mixed  $start
@@ -182,18 +171,26 @@ final class Calendarar
 
     /**
      * 週の始めを月曜日に設定
+     *
+     * @return self
      */
-    private function _startOfMonday()
+    private function _startOfMonday(): self
     {
         $this->mondayStart = true;
+
+        return $this;
     }
 
     /**
      * 週の始めを日曜日に設定
+     *
+     * @return self
      */
-    private function _startOfSunday()
+    private function _startOfSunday(): self
     {
         $this->mondayStart = false;
+
+        return $this;
     }
 
     /**
@@ -242,7 +239,7 @@ final class Calendarar
      */
     private function _oneYear(): self
     {
-        $this->startDatetime = Carbon::now()->addMonth()->startOfMonth();
+        $this->startDatetime = Carbon::now()->startOfMonth();
         $this->endDatetime = Carbon::now()->addMonth(11)->endOfMonth();
 
         return $this;
@@ -403,6 +400,19 @@ final class Calendarar
     }
 
     /**
+     * @param string $encoding
+     * @return self
+     */
+    private function _setEncoding(string $encoding)
+    {
+        if (in_array($encoding, array_keys(CalendararConst::HEADER_ENCODING), true)) {
+            $this->encoding = $encoding;
+        }
+
+        return $this;
+    }
+
+    /**
      * 配列を作成する
      *
      * @return array
@@ -500,65 +510,81 @@ final class Calendarar
         return $calendars;
     }
 
-    // /**
-    //  * @return string
-    //  */
-    // private function _html(): string
-    // {
-    //     $html = '';
-    //     foreach ($this->create() as $year => $years) {
-    //         foreach ($years as $month => $months) {
-    //             $html .= '<table>';
-    //             $html .= '<thead>';
-    //             $html .= '<tr>';
-    //             $html .= '<th class="th_sun">sun</th>';
-    //             $html .= '<th>mon</th>';
-    //             $html .= '<th>tue</th>';
-    //             $html .= '<th>wed</th>';
-    //             $html .= '<th>thu</th>';
-    //             $html .= '<th>fri</th>';
-    //             $html .= '<th class="th_sat">sat</th>';
-    //             $html .= '</tr>';
-    //             $html .= '</thead>';
-    //             $html .= '<tbody>';
-    //             foreach ($months as $week => $weeks) {
-    //                 $html .= '<tr>';
-    //                 foreach ($weeks as $dayOfWeek => $day) {
-    //                     $html .= '<td>';
-    //                     $html .= !empty($day['day']) ? $day['day'] : '';
-    //                     $html .= '</td>';
-    //                 }
-    //                 $html .= '</tr>';
-    //             }
-    //             $html .= '</tbody>';
-    //             $html .= '</table>';
-    //         }
-    //     }
-
-    //     return $html;
-    // }
-
     /**
-     * 週の最初の曜日
-     *
-     * @return int
+     * @return string
      */
-    private function firstDayOfWeekNo(): int
+    private function _html(): string
     {
-        return ($this->mondayStart)
-            ? Carbon::MONDAY
-            : Carbon::SUNDAY;
+        $html = '';
+        foreach ($this->create() as $year => $years) {
+            foreach ($years as $month => $months) {
+                $html .= '<table class="calendarar calendarar-' . $year .  sprintf('%02d', $month) . '">';
+                $html .=   '<thead>';
+                $html .=     '<tr>';
+
+                // 月曜スタートでなければ日曜スタート
+                if (!$this->mondayStart) {
+                    $html .=   '<th class="sun">' . $this->trTemplate(Carbon::SUNDAY) . '</th>';
+                }
+
+                $html .=       '<th class="mon">' . $this->trTemplate(Carbon::MONDAY) . '</th>';
+                $html .=       '<th class="tue">' . $this->trTemplate(Carbon::TUESDAY) . '</th>';
+                $html .=       '<th class="wed">' . $this->trTemplate(Carbon::WEDNESDAY) . '</th>';
+                $html .=       '<th class="thu">' . $this->trTemplate(Carbon::THURSDAY) . '</th>';
+                $html .=       '<th class="fri">' . $this->trTemplate(Carbon::FRIDAY) . '</th>';
+                $html .=       '<th class="sat">' . $this->trTemplate(Carbon::SATURDAY) . '</th>';
+
+                // 月曜スタートであれば日曜ラスト
+                if ($this->mondayStart) {
+                    $html .=   '<th class="sun">' . $this->trTemplate(Carbon::SUNDAY) . '</th>';
+                }
+
+                $html .=     '</tr>';
+                $html .=   '</thead>';
+                $html .= '<tbody>';
+
+                foreach ($months as $week => $weeks) {
+                    $html .=  '<tr class="week' . $week . '">';
+                    foreach ($weeks as $dayOfWeek => $day) {
+                        $html .=  '<td class="' . CalendararConst::WEEKS[$dayOfWeek] . '">';
+                        $html .= !empty($day['day'])
+                            ? $this->tdTemplate($day['day'])
+                            : '';
+                        $html .= '</td>';
+                    }
+                    $html .= '</tr>';
+                }
+                $html .=   '</tbody>';
+                $html .= '</table>';
+            }
+        }
+
+        return $html;
     }
 
     /**
-     * 週の最後の曜日
+     * th のテンプレートセット
      *
-     * @return int
+     * @param  string  $template
+     * @return self
      */
-    private function lastDayOfWeekNo(): int
+    private function _setTrTemplate(string $template): self
     {
-        return ($this->mondayStart)
-            ? self::SUNDAY
-            : Carbon::SATURDAY;
+        $this->trTemplate = $template;
+
+        return $this;
+    }
+
+    /**
+     * td のテンプレートセット
+     *
+     * @param  string  $template
+     * @return self
+     */
+    private function _setTdTemplate(string $template): self
+    {
+        $this->tdTemplate = $template;
+
+        return $this;
     }
 }
