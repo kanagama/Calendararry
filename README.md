@@ -22,6 +22,10 @@ composer require kanagama/calendarar
 
 #### example
 ```php
+use Kanagama/Calendarar/Calendarar;
+
+// 中略
+
 $calendarar = (new Calendarar())->nextMonth();
 
 $calendarar = Calendarar::nextMonth();
@@ -292,6 +296,50 @@ Calendarar::thisMonth()->create();
     ]
   ]
 ]
+```
+
+#### カレンダー出力のための参考コード
+```php
+<!-- 年ループ -->
+<?php foreach ($calendars as $year => $calendar): ?>
+    <!-- 月ループ -->
+    <?php foreach ($calendar as $month => $weeks): ?>
+        <h3><?= $year =>年<?= sprintf('%02d', $month) =>月</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>sun</th>
+                    <th>mon</th>
+                    <th>tue</th>
+                    <th>wed</th>
+                    <th>thu</th>
+                    <th>fri</th>
+                    <th>sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 週ループ -->
+                <?php foreach ($weeks as $oneWeek): ?>
+                    <tr>
+                        <?php foreach ($oneWeek as $dayOfWeek): ?>
+                            <td>
+                                <!-- 日付が入っていれば出力 -->
+                                <?php if (!empty($dayOfWeek['day'])) ?>
+                                    <?= $dayOfWeek['day'] ?>
+                                <?php endforeach ?>
+
+                                <!-- $calendar->setDay() を使って値を入力していた場合はこちらで利用 -->
+                                <?php if (!empty($dayOfWeek['data'])) : ?>
+                                    <!-- 中略 -->
+                                <?php endif>
+                            </td>
+                        <?php endforeach ?>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    <?php endforeach >
+<?php endforeach >
 ```
 
 <br>
