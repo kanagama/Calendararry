@@ -22,10 +22,6 @@ composer require kanagama/calendarar
 
 #### example
 ```php
-use Kanagama/Calendarar/Calendarar;
-
-// 中略
-
 $calendarar = (new Calendarar())->nextMonth();
 
 $calendarar = Calendarar::nextMonth();
@@ -53,9 +49,9 @@ Calendarar::thisMonth()->create();
   2023 => array:1 [
     2 => array:5 [
       1 => array:7 [
-        0 => ""
-        1 => ""
-        2 => ""
+        0 => []
+        1 => []
+        2 => []
         3 => array:6 [
           "year" => 2023
           "month" => 2
@@ -288,58 +284,14 @@ Calendarar::thisMonth()->create();
           "dayOfWeek" => 2
           "data" => []
         ]
-        3 => ""
-        4 => ""
-        5 => ""
-        6 => ""
+        3 => []
+        4 => []
+        5 => []
+        6 => []
       ]
     ]
   ]
 ]
-```
-
-#### カレンダー出力のための参考コード
-```php
-<!-- 年ループ -->
-<?php foreach ($calendars as $year => $calendar): ?>
-    <!-- 月ループ -->
-    <?php foreach ($calendar as $month => $weeks): ?>
-        <h3><?= $year =>年<?= sprintf('%02d', $month) =>月</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>sun</th>
-                    <th>mon</th>
-                    <th>tue</th>
-                    <th>wed</th>
-                    <th>thu</th>
-                    <th>fri</th>
-                    <th>sat</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 週ループ -->
-                <?php foreach ($weeks as $oneWeek): ?>
-                    <tr>
-                        <?php foreach ($oneWeek as $dayOfWeek): ?>
-                            <td>
-                                <!-- 日付が入っていれば出力 -->
-                                <?php if (!empty($dayOfWeek['day'])) ?>
-                                    <?= $dayOfWeek['day'] ?>
-                                <?php endforeach ?>
-
-                                <!-- $calendar->setDay() を使って値を入力していた場合はこちらで利用 -->
-                                <?php if (!empty($dayOfWeek['data'])) : ?>
-                                    <!-- 中略 -->
-                                <?php endif>
-                            </td>
-                        <?php endforeach ?>
-                    </tr>
-                <?php endforeach ?>
-            </tbody>
-        </table>
-    <?php endforeach >
-<?php endforeach >
 ```
 
 <br>
@@ -353,11 +305,9 @@ Calendarar::thisMonth()->create();
 Calendarar::thisMonth()->html();
 ```
 
-#### example
-
-出力される html (※2023/02が設定されている場合）
-
+#### example 出力される html 2023/02
 ```html
+
 <table class="calendarar calendarar-202302">
     <thead>
         <tr>
@@ -372,49 +322,49 @@ Calendarar::thisMonth()->html();
     </thead>
     <tbody>
         <tr class="week1">
-            <td class="sun"></td>
-            <td class="mon"></td>
-            <td class="tue"></td>
-            <td class="wed">1</td>
-            <td class="thu">2</td>
-            <td class="fri">3</td>
-            <td class="sat">4</td>
+            <td class="sun day-none"></td>
+            <td class="mon day-none"></td>
+            <td class="tue day-none"></td>
+            <td class="wed day-1">1</td>
+            <td class="thu day-2">2</td>
+            <td class="fri day-3">3</td>
+            <td class="sat day-4">4</td>
         </tr>
         <tr class="week2">
-            <td class="sun">5</td>
-            <td class="mon">6</td>
-            <td class="tue">7</td>
-            <td class="wed">8</td>
-            <td class="thu">9</td>
-            <td class="fri">10</td>
-            <td class="sat">11</td>
+            <td class="sun day-5">5</td>
+            <td class="mon day-6">6</td>
+            <td class="tue day-7">7</td>
+            <td class="wed day-8">8</td>
+            <td class="thu day-9">9</td>
+            <td class="fri day-10">10</td>
+            <td class="sat day-11">11</td>
         </tr>
         <tr class="week3">
-            <td class="sun">12</td>
-            <td class="mon">13</td>
-            <td class="tue">14</td>
-            <td class="wed">15</td>
-            <td class="thu">16</td>
-            <td class="fri">17</td>
-            <td class="sat">18</td>
+            <td class="sun day-12">12</td>
+            <td class="mon day-13">13</td>
+            <td class="tue day-14">14</td>
+            <td class="wed day-15">15</td>
+            <td class="thu day-16">16</td>
+            <td class="fri day-17">17</td>
+            <td class="sat day-18">18</td>
         </tr>
         <tr class="week4">
-            <td class="sun">19</td>
-            <td class="mon">20</td>
-            <td class="tue">21</td>
-            <td class="wed">22</td>
-            <td class="thu">23</td>
-            <td class="fri">24</td>
-            <td class="sat">25</td>
+            <td class="sun day-19">19</td>
+            <td class="mon day-20">20</td>
+            <td class="tue day-21">21</td>
+            <td class="wed day-22">22</td>
+            <td class="thu day-23">23</td>
+            <td class="fri day-24">24</td>
+            <td class="sat day-25">25</td>
         </tr>
         <tr class="week5">
-            <td class="sun">26</td>
-            <td class="mon">27</td>
-            <td class="tue">28</td>
-            <td class="wed"></td>
-            <td class="thu"></td>
-            <td class="fri"></td>
-            <td class="sat"></td>
+            <td class="sun day-26">26</td>
+            <td class="mon day-27">27</td>
+            <td class="tue day-28">28</td>
+            <td class="wed day-none"></td>
+            <td class="thu day-none"></td>
+            <td class="fri day-none"></td>
+            <td class="sat day-none"></td>
         </tr>
     </tbody>
 </table>
@@ -449,7 +399,6 @@ Calendarar::thisMonth()
     </thead>
 ```
 
-<br>
 
 ### setTrTemplate(string $template)
 
@@ -488,42 +437,6 @@ Calendarar::thisMonth()
 
 <br>
 
-### setTdTemplate(string $template)
-
-html() で出力される table.tbody.tr.td タグ内のテンプレートを変更します
-
-
-#### デフォルト値
-
-```
-{{day}}
-```
-{{day}}が数値の日付に変換されます
-
-
-#### example
-
-```php
-Calendarar::thisMonth()
-    ->setTdTemplate('<span class="bold">{{day}}</span>')
-    ->html()
-```
-
-```html
-    <tbody>
-        <tr class="week1">
-            <td class="sun"></td>
-            <td class="mon"></td>
-            <td class="tue"></td>
-            <td class="wed"><span class="bold">1</span></td>
-            <td class="thu"><span class="bold">2</span></td>
-            <td class="fri"><span class="bold">3</span></td>
-            <td class="sat"><span class="bold">4</span></td>
-        </tr>
-```
-
-<br>
-
 ### setDay(int $year, int $month, int $day, mixed $data)
 
 指定日に、$data を格納する
@@ -544,9 +457,9 @@ Calendarar::thisMonth()
   2023 => array:1 [
     2 => array:5 [
       1 => array:7 [
-        0 => ""
-        1 => ""
-        2 => ""
+        0 => []
+        1 => []
+        2 => []
         3 => array:6 [
           "year" => 2023
           "month" => 2
@@ -782,14 +695,48 @@ Calendarar::thisMonth()
           "dayOfWeek" => 2
           "data" => []
         ]
-        3 => ""
-        4 => ""
-        5 => ""
-        6 => ""
+        3 => []
+        4 => []
+        5 => []
+        6 => []
       ]
     ]
   ]
 ]
+```
+
+### setTdTemplate(string $template)
+
+html() で出力される table.tbody.tr.td タグ内のテンプレートを変更します
+
+
+#### デフォルト値
+
+```
+{{day}}
+```
+{{day}}が数値の日付に変換されます
+
+
+#### example
+
+```php
+Calendarar::thisMonth()
+    ->setTdTemplate('<span class="bold">{{day}}</span>')
+    ->html()
+```
+
+```html
+    <tbody>
+        <tr class="week1">
+            <td class="sun"></td>
+            <td class="mon"></td>
+            <td class="tue"></td>
+            <td class="wed"><span class="bold">1</span></td>
+            <td class="thu"><span class="bold">2</span></td>
+            <td class="fri"><span class="bold">3</span></td>
+            <td class="sat"><span class="bold">4</span></td>
+        </tr>
 ```
 
 <br>
@@ -799,13 +746,6 @@ Calendarar::thisMonth()
 第一引数にカレンダー開始日、第二引数にカレンダー終了日を設定する
 
 ※第一引数は月初に、第二引数は月末に変換されます
-
-#### example
-```php
-// 3ヶ月分のカレンダーを設定
-Calendarar::set('2023-02-01', '2023-04-30');
-```
-
 
 <br>
 

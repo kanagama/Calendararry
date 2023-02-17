@@ -478,15 +478,15 @@ final class Calendarar
                 // 存在しない日付は空にする
                 for ($dayOfWeek = $this->firstDayOfWeekNo(); $dayOfWeek <= $this->lastDayOfWeekNo(); $dayOfWeek++) {
                     if (!array_key_exists($dayOfWeek, $weeks[1])) {
-                        $weeks[1][$dayOfWeek] = "";
+                        $weeks[1][$dayOfWeek] = [];
                     }
 
                     if (!checkdate(sprintf('%02d', $month), $weeks[5][$dayOfWeek]['day'], $year)) {
-                        $weeks[5][$dayOfWeek] = "";
+                        $weeks[5][$dayOfWeek] = [];
                     }
 
                     if (!empty($weeks[6]) && !checkdate(sprintf('%02d', $month), $weeks[6][$dayOfWeek]['day'], $year)) {
-                        $weeks[6][$dayOfWeek] = "";
+                        $weeks[6][$dayOfWeek] = [];
                     }
                 }
 
@@ -546,7 +546,7 @@ final class Calendarar
                 foreach ($months as $week => $weeks) {
                     $html .=  '<tr class="week' . $week . '">';
                     foreach ($weeks as $dayOfWeek => $day) {
-                        $html .=  '<td class="' . CalendararConst::WEEKS[$dayOfWeek] . '">';
+                        $html .=  '<td class="' . CalendararConst::WEEKS[$dayOfWeek] . ' ' . $this->setDayClass($day) . '">';
                         $html .= !empty($day['day'])
                             ? $this->tdTemplate($day['day'])
                             : '';

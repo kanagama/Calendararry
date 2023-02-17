@@ -98,4 +98,19 @@ trait CalendarPrivateFunctionTrait
             $this->tdTemplate
         );
     }
+
+    /**
+     * td に付与するクラス
+     *
+     * @param  array  $day
+     * @return string
+     */
+    private function setDayClass(array $day)
+    {
+        if (!empty($day) && !empty($day['day'])) {
+            return 'day-' . $day['day'];
+        }
+
+        return 'day-none';
+    }
 }
