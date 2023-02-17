@@ -372,6 +372,80 @@ Calendarar::thisMonth()->html();
 
 <br>
 
+### startOfMonday()
+
+カレンダーの週の始まりを月曜にする
+
+#### example
+```php
+Calendarar::thisMonth()
+    ->startOfMonday()
+    ->html()
+```
+
+```html
+<table class="calendarar calendarar-202302">
+    <thead>
+        <tr>
+            <th class="mon">月</th>
+            <th class="tue">火</th>
+            <th class="wed">水</th>
+            <th class="thu">木</th>
+            <th class="fri">金</th>
+            <th class="sat">土</th>
+            <th class="sun">日</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="week1">
+            <td class="mon day-none"></td>
+            <td class="tue day-none"></td>
+            <td class="wed day-1">1</td>
+            <td class="thu day-2">2</td>
+            <td class="fri day-3">3</td>
+            <td class="sat day-4">4</td>
+            <td class="sun day-5">5</td>
+        </tr>
+```
+
+### startOfSunday()
+
+カレンダーの週の始まりを日曜にする（デフォルト）
+
+#### example
+```php
+Calendarar::thisMonth()
+    ->startOfSunday()
+    ->html()
+```
+
+```html
+<table class="calendarar calendarar-202302">
+    <thead>
+        <tr>
+            <th class="sun">日</th>
+            <th class="mon">月</th>
+            <th class="tue">火</th>
+            <th class="wed">水</th>
+            <th class="thu">木</th>
+            <th class="fri">金</th>
+            <th class="sat">土</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="week1">
+            <td class="sun day-none"></td>
+            <td class="mon day-none"></td>
+            <td class="tue day-none"></td>
+            <td class="wed day-1">1</td>
+            <td class="thu day-2">2</td>
+            <td class="fri day-3">3</td>
+            <td class="sat day-4">4</td>
+        </tr>
+```
+
+<br>
+
 ### setEncoding
 
 html() で出力する table.thead.tr.th の内容を ja, en で指定する
