@@ -34,4 +34,4 @@ jobs:
 
     - name: Run PHPUnit Test
       run: |
-        vendor/bin/phpunit tests/HolidaysTest.php
+        vendor/bin/phpunit tests/CalendarTest.php

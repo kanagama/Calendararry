@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   php74:
-    container_name: php74
+    container_name: php74_calendarar
     build:
       context: .
       dockerfile: ./.docker/Dockerfile
