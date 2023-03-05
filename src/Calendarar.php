@@ -3,6 +3,7 @@
 namespace Kanagama\Calendarar;
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Kanagama\Calendarar\Consts\CalendararConst;
 use Kanagama\Calendarar\Traits\CalendarPrivateFunctionTrait;
 
@@ -52,14 +53,14 @@ final class Calendarar
      *
      * @var Carbon|null
      */
-    private Carbon $startDatetime;
+    private ?Carbon $startDatetime;
 
     /**
      * 終了日
      *
      * @var Carbon|null
      */
-    private Carbon $endDatetime;
+    private ?Carbon $endDatetime;
 
     /**
      * 言語設定
@@ -213,8 +214,8 @@ final class Calendarar
      */
     private function _lastMonth(): self
     {
-        $this->startDatetime = Carbon::now()->subMonth(1)->startOfMonth();
-        $this->endDatetime = Carbon::now()->subMonth(1)->endOfMonth();
+        $this->startDatetime = Carbon::now()->subMonth()->startOfMonth();
+        $this->endDatetime = Carbon::now()->subMonth()->endOfMonth();
 
         return $this;
     }
@@ -226,8 +227,8 @@ final class Calendarar
      */
     private function _nextMonth(): self
     {
-        $this->startDatetime = Carbon::now()->addMonth(1)->startOfMonth();
-        $this->endDatetime = Carbon::now()->addMonth(1)->endOfMonth();
+        $this->startDatetime = Carbon::now()->addMonth()->startOfMonth();
+        $this->endDatetime = Carbon::now()->addMonth()->endOfMonth();
 
         return $this;
     }
@@ -240,7 +241,7 @@ final class Calendarar
     private function _oneYear(): self
     {
         $this->startDatetime = Carbon::now()->startOfMonth();
-        $this->endDatetime = Carbon::now()->addMonth(11)->endOfMonth();
+        $this->endDatetime = Carbon::now()->addMonths(11)->endOfMonth();
 
         return $this;
     }
@@ -255,7 +256,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->startDatetime->addYear($add)->startOfMonth();
+        $this->startDatetime->addYears($add)->startOfMonth();
 
         return $this;
     }
@@ -270,7 +271,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->endDatetime->addYear($add)->endOfMonth();
+        $this->endDatetime->addYears($add)->endOfMonth();
 
         return $this;
     }
@@ -285,7 +286,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->startDatetime->subYear($sub)->startOfMonth();
+        $this->startDatetime->subYears($sub)->startOfMonth();
 
         return $this;
     }
@@ -300,7 +301,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->endDatetime->subYear($sub)->endOfMonth();
+        $this->endDatetime->subYears($sub)->endOfMonth();
 
         return $this;
     }
@@ -315,7 +316,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->startDatetime->addMonth($add)->startOfMonth();
+        $this->startDatetime->addMonths($add)->startOfMonth();
 
         return $this;
     }
@@ -330,7 +331,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->endDatetime->addMonth($add)->endOfMonth();
+        $this->endDatetime->addMonths($add)->endOfMonth();
 
         return $this;
     }
@@ -345,7 +346,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->startDatetime->subMonth($sub)->startOfMonth();
+        $this->startDatetime->subMonths($sub)->startOfMonth();
 
         return $this;
     }
@@ -360,7 +361,7 @@ final class Calendarar
     {
         $this->reset();
 
-        $this->endDatetime->subMonth($sub)->endOfMonth();
+        $this->endDatetime->subMonths($sub)->endOfMonth();
 
         return $this;
     }
