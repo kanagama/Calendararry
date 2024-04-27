@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DomDocument;
 use Kanagama\Calendarar\Calendarar;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 final class CalendarTest extends TestCase
 {
@@ -27,33 +28,27 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * カレンダー配列が出力されること
-     *
      * @test
      */
-    public function create()
+    public function カレンダー配列が出力される()
     {
         $objectResponse = $this->calendarar->create();
         $this->assertTrue(is_array($objectResponse));
     }
 
     /**
-     * カレンダー配列が出力されること
-     *
      * @test
      */
-    public function staticCreate()
+    public function 静的でもカレンダー配列が出力される()
     {
         $staticResponse = Calendarar::create();
         $this->assertTrue(is_array($staticResponse));
     }
 
     /**
-     * 開始日が設定されること
-     *
      * @test
      */
-    public function getStartDatetime()
+    public function 開始日として月初がデフォルト指定されている()
     {
         $objectResponse = $this->calendarar->getStartDatetime();
         $this->assertIsString($objectResponse);
@@ -61,11 +56,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 開始日が設定されること
-     *
      * @test
      */
-    public function staticGetStartDatetime()
+    public function 静的でも開始日として月初がデフォルト指定されている()
     {
         $staticResponse = Calendarar::getStartDatetime();
         $this->assertIsString($staticResponse);
@@ -73,11 +66,49 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 終了日が出力されること
-     *
      * @test
      */
-    public function getEndDatetime()
+    public function 開始月を指定できる()
+    {
+        $object = $this->calendarar->setStartMonth('2022-01-01');
+        $this->assertInstanceOf(Calendarar::class, $object);
+        $this->assertEquals($object->getStartDatetime(), '2022-01-01');
+    }
+
+    /**
+     * @test
+     */
+    public function 静的でも開始月を指定できる()
+    {
+        $object = Calendarar::setStartMonth('2022-01-01');
+        $this->assertInstanceOf(Calendarar::class, $object);
+        $this->assertEquals($object->getStartDatetime(), '2022-01-01');
+    }
+
+    /**
+     * @test
+     */
+    public function 終了月を指定できる()
+    {
+        $object = $this->calendarar->setEndMonth('2022-01-01');
+        $this->assertInstanceOf(Calendarar::class, $object);
+        $this->assertEquals($object->getEndDatetime(), '2022-01-31');
+    }
+
+    /**
+     * @test
+     */
+    public function 静的でも終了月を指定できる()
+    {
+        $object = Calendarar::setEndMonth('2022-01-01');
+        $this->assertInstanceOf(Calendarar::class, $object);
+        $this->assertEquals($object->getEndDatetime(), '2022-01-31');
+    }
+
+    /**
+     * @test
+     */
+    public function 終了日として月末がデフォルト指定されている()
     {
         $objectResponse = $this->calendarar->getEndDatetime();
         $this->assertIsString($objectResponse);
@@ -85,11 +116,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 終了日が出力されること
-     *
      * @test
      */
-    public function staticGetEndDatetime()
+    public function 静的でも終了日として月末がデフォルト指定されている()
     {
         $staticResponse = Calendarar::getEndDatetime();
         $this->assertIsString($staticResponse);
@@ -97,11 +126,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 指定した月が設定されること
-     *
      * @test
      */
-    public function set()
+    public function 指定した開始月と終了月が指定できる()
     {
         $object = $this->calendarar->set('2022-02-01', '2022-03-28');
         $this->assertInstanceOf(Calendarar::class, $object);
@@ -110,11 +137,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 指定した月が設定されること
-     *
      * @test
      */
-    public function staticSet()
+    public function 静的でも開始付きと終了月が指定できる()
     {
         $static = Calendarar::set('2022-02-01', '2022-03-28');
         $this->assertInstanceOf(Calendarar::class, $static);
@@ -123,11 +148,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 今月が設定されていること
-     *
      * @test
      */
-    public function thisMonth()
+    public function 今月が設定される()
     {
         $object = $this->calendarar->thisMonth();
         $this->assertInstanceOf(Calendarar::class, $object);
@@ -136,11 +159,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 今月が設定されていること
-     *
      * @test
      */
-    public function staticThisMonth()
+    public function 静的でも今月が設定される()
     {
         $static = Calendarar::thisMonth();
         $this->assertInstanceOf(Calendarar::class, $static);
@@ -149,11 +170,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 先月が設定されること
-     *
      * @test
      */
-    public function lastMonth()
+    public function 先月が設定される()
     {
         $object = $this->calendarar->lastMonth();
         $this->assertInstanceOf(Calendarar::class, $object);
@@ -162,11 +181,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 先月が設定されること
-     *
      * @test
      */
-    public function staticLastMonth()
+    public function 静的でも先月が設定される()
     {
         $static = Calendarar::lastMonth();
         $this->assertInstanceOf(Calendarar::class, $static);
@@ -175,11 +192,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 来月が設定されること
-     *
      * @test
      */
-    public function nextMonth()
+    public function 翌月が設定される()
     {
         $object = $this->calendarar->nextMonth();
         $this->assertInstanceOf(Calendarar::class, $object);
@@ -188,11 +203,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 来月が設定されること
-     *
      * @test
      */
-    public function staticNextMonth()
+    public function 静的でも翌月が設定される()
     {
         $static = Calendarar::nextMonth();
         $this->assertInstanceOf(Calendarar::class, $static);
@@ -201,11 +214,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 1年分のカレンダーが設定されること
-     *
      * @test
      */
-    public function oneYear()
+    public function 今月から1年分のカレンダーが設定される()
     {
         $object = $this->calendarar->oneYear();
         $this->assertInstanceOf(Calendarar::class, $object);
@@ -214,11 +225,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 1年分のカレンダーが設定されること
-     *
      * @test
      */
-    public function staticOneYear()
+    public function 静的でも今月から1年分のカレンダーが設定される()
     {
         $static = Calendarar::oneYear();
         $this->assertInstanceOf(Calendarar::class, $static);
@@ -227,206 +236,172 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 開始年が1年加算されていること
-     *
      * @test
      */
-    public function startAddYear()
+    public function 開始月が1年加算される()
     {
-        $object = $this->calendarar->startAddYear(1);
+        $object = $this->calendarar->addStartYear(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getStartDatetime(), '2024-02-01');
     }
 
     /**
-     * 開始年が1年加算されていること
-     *
      * @test
      */
-    public function staticStartAddYear()
+    public function 静的でも開始月が1年加算される()
     {
-        $static = Calendarar::startAddYear(1);
+        $static = Calendarar::addStartYear(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getStartDatetime(), '2024-02-01');
     }
 
     /**
-     * 終了月が1年加算されていること
-     *
      * @test
      */
-    public function endAddYear()
+    public function 終了月が1年加算される()
     {
-        $object = $this->calendarar->endAddYear(1);
+        $object = $this->calendarar->addEndYear(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getEndDatetime(), '2024-02-29');
     }
 
     /**
-     * 終了月が1年加算されていること
-     *
      * @test
      */
-    public function staticEndAddYear()
+    public function 静的でも終了月が1年加算される()
     {
-        $static = Calendarar::endAddYear(1);
+        $static = Calendarar::addEndYear(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getEndDatetime(), '2024-02-29');
     }
 
     /**
-     * 開始年が1年減算されていること
-     *
      * @test
      */
-    public function startSubYear()
+    public function 開始月が1年減算される()
     {
-        $object = $this->calendarar->startSubYear(1);
+        $object = $this->calendarar->subStartYear(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getStartDatetime(), '2022-02-01');
     }
 
     /**
-     * 開始年が1年減算されていること
-     *
      * @test
      */
-    public function staticStartSubYear()
+    public function 静的でも開始月が1年減算される()
     {
-        $static = Calendarar::startSubYear(1);
+        $static = Calendarar::subStartYear(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getStartDatetime(), '2022-02-01');
     }
 
     /**
-     * 終了年が1年減算されていること
-     *
      * @test
      */
-    public function endSubYear()
+    public function 終了年が1年減算される()
     {
-        $object = $this->calendarar->endSubYear(1);
+        $object = $this->calendarar->subEndYear(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getEndDatetime(), '2022-02-28');
     }
 
     /**
-     * 終了年が1年減算されていること
-     *
      * @test
      */
-    public function staticEndSubYear()
+    public function 静的でも終了年が1年減算される()
     {
-        $static = Calendarar::endSubYear(1);
+        $static = Calendarar::subEndYear(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getEndDatetime(), '2022-02-28');
     }
 
     /**
-     * 開始月が1ヶ月加算されていること
-     *
      * @test
      */
-    public function startAddMonth()
+    public function 開始月が1ヶ月加算される()
     {
-        $object = $this->calendarar->startAddMonth(1);
+        $object = $this->calendarar->addStartMonth(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getStartDatetime(), '2023-03-01');
     }
 
     /**
-     * 開始月が1ヶ月加算されていること
-     *
      * @test
      */
-    public function staticStartAddMonth()
+    public function 静的でも開始月が1ヶ月加算される()
     {
-        $static = Calendarar::startAddMonth(1);
+        $static = Calendarar::addStartMonth(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getStartDatetime(), '2023-03-01');
     }
 
     /**
-     * 終了月が1ヶ月加算されていること
-     *
      * @test
      */
-    public function endAddMonth()
+    public function 終了月が1ヶ月加算される()
     {
-        $object = $this->calendarar->endAddMonth(1);
+        $object = $this->calendarar->addEndMonth(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getEndDatetime(), '2023-03-31');
     }
 
     /**
-     * 終了月が1ヶ月加算されていること
-     *
      * @test
      */
-    public function staticEndAddMonth()
+    public function 静的でも終了月が1ヶ月加算される()
     {
-        $static = Calendarar::endAddMonth(1);
+        $static = Calendarar::addEndMonth(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getEndDatetime(), '2023-03-31');
     }
 
     /**
-     * 開始月が1ヶ月減算されていること
-     *
      * @test
      */
-    public function startSubMonth()
+    public function 開始月が1ヶ月減算される()
     {
-        $object = $this->calendarar->startSubMonth(1);
+        $object = $this->calendarar->subStartMonth(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getStartDatetime(), '2023-01-01');
     }
 
     /**
-     * 開始月が1ヶ月減算されていること
-     *
      * @test
      */
-    public function staticStartSubMonth()
+    public function 静的でも開始月が1ヶ月減算される()
     {
-        $static = Calendarar::startSubMonth(1);
+        $static = Calendarar::subStartMonth(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getStartDatetime(), '2023-01-01');
     }
 
     /**
-     * 終了月が1ヶ月減算されていること
-     *
      * @test
      */
-    public function endSubMonth()
+    public function 終了月が1ヶ月減算される()
     {
-        $object = $this->calendarar->endSubMonth(1);
+        $object = $this->calendarar->subEndMonth(1);
         $this->assertInstanceOf(Calendarar::class, $object);
         $this->assertEquals($object->getEndDatetime(), '2023-01-31');
     }
 
     /**
-     * 終了月が1ヶ月減算されていること
-     *
      * @test
      */
-    public function staticEndSubMonth()
+    public function 静的でも終了月が1ヶ月減算される()
     {
-        $static = Calendarar::endSubMonth(1);
+        $static = Calendarar::subEndMonth(1);
         $this->assertInstanceOf(Calendarar::class, $static);
         $this->assertEquals($static->getEndDatetime(), '2023-01-31');
     }
 
     /**
+     * @test
+     * @dataProvider setEncondingProvider
      * @param  string  $encoding
      * @param  string  $dayOfWeek
-     *
-     * @test
-     *
-     * @dataProvider setEncondingProvider
      */
-    public function setEncoding(
+    public function 指定の言語で表示されていること(
         string $encoding,
         string $dayOfWeek
     ) {
@@ -462,11 +437,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 曜日が月曜スタートとなること
-     *
      * @test
      */
-    public function startOfMonday()
+    public function 曜日が月曜開始になる()
     {
         // 正常に実行されること
         $object = $this->calendarar->startOfMonday();
@@ -477,11 +450,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 曜日が月曜スタートとなること
-     *
      * @test
      */
-    public function staticStartOfMonday()
+    public function 静的でも曜日が月曜開始になる()
     {
         // 静的呼び出しができること
         $static = Calendarar::startOfMonday();
@@ -489,11 +460,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * @param  string  $response
-     *
      * @test
-     *
-     * @depends startOfMonday
+     * @depends 曜日が月曜開始になる
+     * @param  string  $response
      */
     public function 曜日が月曜から開始されていること(string $response)
     {
@@ -505,11 +474,9 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 曜日が日曜スタートとなること
-     *
      * @test
      */
-    public function startOfSunday()
+    public function 曜日が日曜開始になる()
     {
         // 正常に実行されること
         $object = $this->calendarar->startOfSunday();
@@ -520,22 +487,18 @@ final class CalendarTest extends TestCase
     }
 
     /**
-     * 曜日が日曜スタートとなること
-     *
      * @test
      */
-    public function staticStartOfSunday()
+    public function 静的でも曜日が日曜開始になる()
     {
         $static = Calendarar::startOfSunday();
         $this->assertInstanceOf(Calendarar::class, $static);
     }
 
     /**
-     * @param string $response
-     *
      * @test
-     *
-     * @depends startOfSunday
+     * @depends 曜日が日曜開始になる
+     * @param string $response
      */
     public function 曜日が日曜から開始されていること(string $response)
     {
@@ -549,10 +512,20 @@ final class CalendarTest extends TestCase
     /**
      * @test
      */
-    public function html()
+    public function htmlとして出力される()
     {
         // 正常に実行されること
         $response = $this->calendarar->html();
         $this->assertTrue(!empty($response));
+    }
+
+    /**
+     * @test
+     */
+    public function 開始月が終了月より後の場合は例外が発生する()
+    {
+        $this->expectException(RuntimeException::class);
+
+        Calendarar::subEndMonth(1)->create();
     }
 }
