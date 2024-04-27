@@ -6,61 +6,76 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Kanagama\Calendarar\Consts\CalendararConst;
 use Kanagama\Calendarar\Traits\CalendarPrivateFunctionTrait;
+use Kanagama\Calendarar\Traits\DeprecatedMethod;
+use Kanagama\Calendarar\ValueObject\Deprecated;
+use RuntimeException;
 
 /**
- * @method array create()
- * @method string getStartDatetime()
- * @method string getEndDatetime()
- * @method self set(mixed $start, mixed $end)
- * @method self thisMonth()
- * @method self lastMonth()
- * @method self nextMonth()
- * @method self oneYear()
- * @method self startAddYear(int $add)
- * @method self endAddYear(int $add)
- * @method self startSubYear(int $sub)
- * @method self endSubYear(int $sub)
- * @method self startAddMonth(int $add)
- * @method self endAddMonth(int $add)
- * @method self startSubMonth(int $sub)
- * @method self endSubMonth(int $sub)
+ * カレンダー配列を生成する
  *
- * @method static array create()
- * @method static string getStartDatetime()
- * @method static string getEndDatetime()
- * @method static self set(mixed $start, mixed $end)
- * @method static self thisMonth()
- * @method static self lastMonth()
- * @method static self nextMonth()
- * @method static self oneYear()
- * @method static self startAddYear(int $add)
- * @method static self endAddYear(int $add)
- * @method static self startSubYear(int $sub)
- * @method static self endSubYear(int $sub)
- * @method static self startAddMonth(int $add)
- * @method static self endAddMonth(int $add)
- * @method static self startSubMonth(int $sub)
- * @method static self endSubMonth(int $sub)
+ * @method self startOfMonday() 週の始めを月曜日に設定
+ * @method self startOfSunday() 週の始めを日曜日に設定
+ * @method self setStartMonth(mixed $start) 開始月を設定する
+ * @method self setEndMonth(mixed $end) 終了月を設定する
+ * @method array create() カレンダー配列を作成する
+ * @method string getStartDatetime() 開始日を取得する
+ * @method string getEndDatetime() 終了日を取得する
+ * @method self set(mixed $start, mixed $end) 開始日と終了日を設定する
+ * @method self thisMonth() 今月分に設定
+ * @method self lastMonth() 先月分に設定
+ * @method self nextMonth() 来月分に設定
+ * @method self oneYear() 今月から1年分の配列を作成する
+ * @method self addStartYear(int $add) 開始日に $add 年分加算する
+ * @method self addEndYear(int $add) 終了日に $add 年分加算する
+ * @method self subStartYear(int $sub) 開始日に $sub 年分減算する
+ * @method self subEndYear(int $sub) 終了日に $sub 年分減算する
+ * @method self addStartMonth(int $add) 開始日に $add ヶ月分加算する
+ * @method self addEndMonth(int $add) 終了日に $add ヶ月分加算する
+ * @method self subStartMonth(int $sub) 開始日に $sub ヶ月分減算する
+ * @method self subEndMonth(int $sub) 終了日に $sub ヶ月分減算する
+ *
+ * @method static self startOfMonday() 週の始めを月曜日に設定
+ * @method static self startOfSunday() 週の始めを日曜日に設定
+ * @method static self setStartMonth(mixed $start) 開始月を設定する
+ * @method static self setEndMonth(mixed $end) 終了月を設定する
+ * @method static array create() カレンダー配列を作成する
+ * @method static string getStartDatetime() 開始日を取得する
+ * @method static string getEndDatetime() 終了日を取得する
+ * @method static self set(mixed $start, mixed $end) 開始日と終了日を設定する
+ * @method static self thisMonth() 今月分に設定
+ * @method static self lastMonth() 先月分に設定
+ * @method static self nextMonth() 来月分に設定
+ * @method static self oneYear() 今月から1年分の配列を作成する
+ * @method static self addStartYear(int $add) 開始日に $add 年分加算する
+ * @method static self addEndYear(int $add) 終了日に $add 年分加算する
+ * @method static self subStartYear(int $sub) 開始日に $sub 年分減算する
+ * @method static self subEndYear(int $sub) 終了日に $sub 年分減算する
+ * @method static self addStartMonth(int $add) 開始日に $add ヶ月分加算する
+ * @method static self addEndMonth(int $add) 終了日に $add ヶ月分加算する
+ * @method static self subStartMonth(int $sub) 開始日に $sub ヶ月分減算する
+ * @method static self subEndMonth(int $sub) 終了日に $sub ヶ月分減算する
  *
  * @author k-nagama <k.nagama0632@gmail.com>
+ * @throws RuntimeException 開始月が終了月よりも後になっている場合
  */
 final class Calendarar
 {
     use CalendarPrivateFunctionTrait;
+    use DeprecatedMethod;
 
     /**
      * 開始日
      *
      * @var Carbon|null
      */
-    private ?Carbon $startDatetime;
+    private ?Carbon $startDatetime = null;
 
     /**
      * 終了日
      *
      * @var Carbon|null
      */
-    private ?Carbon $endDatetime;
+    private ?Carbon $endDatetime = null;
 
     /**
      * 言語設定
@@ -96,16 +111,17 @@ final class Calendarar
     private array $dayData = [];
 
     /**
+     * @test
      * @param  Carbon|CarbonImmutable|string|null  $start
      * @param  Carbon|CarbonImmutable|string|null  $end
      */
     public function __construct($start = null, $end = null)
     {
-        if (!is_null($start)) {
-            $this->startDatetime = (new Carbon($start))->startOfMonth();
+        if ($start !== null) {
+            $this->setStartMonth($start);
         }
-        if (!is_null($end)) {
-            $this->endDatetime = (new Carbon($end))->endOfMonth();
+        if ($end !== null) {
+            $this->setEndMonth($end);
         }
 
         $this->reset();
@@ -114,12 +130,15 @@ final class Calendarar
     /**
      * 動的呼び出し
      *
+     * @test
      * @param  string  $name
      * @param  array  $args
      * @return mixed
      */
     public function __call($name, $args)
     {
+        Deprecated::deprecatedMessage($name);
+
         $callMethod = '_' . $name;
         if (method_exists($this, $callMethod)) {
             return call_user_func_array(array($this, $callMethod), $args);
@@ -129,12 +148,15 @@ final class Calendarar
     /**
      * 静的呼び出し
      *
+     * @test
      * @param  string  $name
      * @param  array  $args
      * @return mixed
      */
     public static function __callStatic($name, $args)
     {
+        Deprecated::deprecatedMessage($name);
+
         $instance = new self(Carbon::now(), Carbon::now());
         call_user_func_array(array($instance, 'reset'), []);
 
@@ -147,6 +169,7 @@ final class Calendarar
     /**
      * 関数として呼び出された場合
      *
+     * @test
      * @return array
      */
     public function __invoke(): array
@@ -157,8 +180,46 @@ final class Calendarar
     }
 
     /**
+     * 開始月を設定する
+     *
+     * @param  mixed  $start
+     * @return self
+     */
+    private function _setStartMonth($start): self
+    {
+        $carbon = new Carbon();
+        if (empty($start) === false) {
+            $carbon = new Carbon($start);
+        }
+
+        $this->startDatetime = $carbon->startOfMonth();
+
+        return $this;
+    }
+
+    /**
+     * 終了月を設定
+     *
+     * @param  mixed  $end
+     * @return self
+     */
+    private function _setEndMonth($end): self
+    {
+        $carbon = new Carbon();
+        if (empty($end) === false) {
+            $carbon = new Carbon($end);
+        }
+
+        $this->endDatetime = $carbon->endOfMonth();
+
+        return $this;
+
+    }
+
+    /**
      * 開始月と終了月を設定する
      *
+     * @test
      * @param  mixed  $start
      * @param  mixed  $end
      * @return self
@@ -173,6 +234,7 @@ final class Calendarar
     /**
      * 週の始めを月曜日に設定
      *
+     * @test
      * @return self
      */
     private function _startOfMonday(): self
@@ -185,6 +247,7 @@ final class Calendarar
     /**
      * 週の始めを日曜日に設定
      *
+     * @test
      * @return self
      */
     private function _startOfSunday(): self
@@ -197,6 +260,7 @@ final class Calendarar
     /**
      * 今月分に設定
      *
+     * @test
      * @return self
      */
     private function _thisMonth(): self
@@ -210,6 +274,7 @@ final class Calendarar
     /**
      * 先月分に設定
      *
+     * @test
      * @return self
      */
     private function _lastMonth(): self
@@ -223,6 +288,7 @@ final class Calendarar
     /**
      * 来月分に設定
      *
+     * @test
      * @return self
      */
     private function _nextMonth(): self
@@ -236,6 +302,7 @@ final class Calendarar
     /**
      * 今月から1年分の配列を作成する
      *
+     * @test
      * @return self
      */
     private function _oneYear(): self
@@ -249,10 +316,11 @@ final class Calendarar
     /**
      * 開始日に $add 年分加算する
      *
+     * @test
      * @param  int  $add
      * @return self
      */
-    private function _startAddYear(int $add): self
+    private function _addStartYear(int $add): self
     {
         $this->reset();
 
@@ -264,10 +332,11 @@ final class Calendarar
     /**
      * 終了日に $add 年分加算する
      *
+     * @test
      * @param  int  $add
      * @return self
      */
-    private function _endAddYear(int $add): self
+    private function _addEndYear(int $add): self
     {
         $this->reset();
 
@@ -279,10 +348,11 @@ final class Calendarar
     /**
      * 開始日に $sub 年分減算する
      *
+     * @test
      * @param  int  $sub
      * @return self
      */
-    private function _startSubYear(int $sub): self
+    private function _subStartYear(int $sub): self
     {
         $this->reset();
 
@@ -294,10 +364,11 @@ final class Calendarar
     /**
      * 終了日に $sub 年分減算する
      *
+     * @test
      * @param  int  $sub
      * @return self
      */
-    private function _endSubYear(int $sub): self
+    private function _subEndYear(int $sub): self
     {
         $this->reset();
 
@@ -309,10 +380,11 @@ final class Calendarar
     /**
      * 開始日に $add ヶ月分加算する
      *
+     * @test
      * @param  int  $add
      * @return self
      */
-    private function _startAddMonth(int $add): self
+    private function _addStartMonth(int $add): self
     {
         $this->reset();
 
@@ -324,10 +396,11 @@ final class Calendarar
     /**
      * 終了日に $add ヶ月分加算する
      *
+     * @test
      * @param  int  $add
      * @return self
      */
-    private function _endAddMonth(int $add): self
+    private function _addEndMonth(int $add): self
     {
         $this->reset();
 
@@ -339,10 +412,11 @@ final class Calendarar
     /**
      * 終了日に $sub ヶ月分減算する
      *
+     * @test
      * @param  int  $sub
      * @return self
      */
-    private function _startSubMonth(int $sub): self
+    private function _subStartMonth(int $sub): self
     {
         $this->reset();
 
@@ -354,10 +428,11 @@ final class Calendarar
     /**
      * 終了日に $sub ヶ月分減算する
      *
+     * @test
      * @param  int  $sub
      * @return self
      */
-    private function _endSubMonth(int $sub): self
+    private function _subEndMonth(int $sub): self
     {
         $this->reset();
 
@@ -367,6 +442,7 @@ final class Calendarar
     }
 
     /**
+     * @test
      * @return string
      */
     private function _getStartDatetime(): string
@@ -377,6 +453,7 @@ final class Calendarar
     }
 
     /**
+     * @test
      * @return string
      */
     private function _getEndDatetime(): string
@@ -387,6 +464,7 @@ final class Calendarar
     }
 
     /**
+     * @test
      * @param  int  $year
      * @param  int  $month
      * @param  int  $day
@@ -401,6 +479,7 @@ final class Calendarar
     }
 
     /**
+     * @test
      * @param string $encoding
      * @return self
      */
@@ -416,11 +495,17 @@ final class Calendarar
     /**
      * 配列を作成する
      *
+     * @test
      * @return array
+     * @throws RuntimeException
      */
     private function _create(): array
     {
         $this->reset();
+
+        if ((int) $this->startDatetime->format('Ymd') > (int) $this->endDatetime->format('Ymd')) {
+            throw new RuntimeException('開始日が終了日よりも後になっています。');
+        }
 
         $startYear = (int) $this->startDatetime->format('Y');
         $endYear   = (int) $this->endDatetime->format('Y');
@@ -512,6 +597,7 @@ final class Calendarar
     }
 
     /**
+     * @test
      * @return string
      */
     private function _html(): string
@@ -566,6 +652,7 @@ final class Calendarar
     /**
      * th のテンプレートセット
      *
+     * @test
      * @param  string  $template
      * @return self
      */
@@ -579,6 +666,7 @@ final class Calendarar
     /**
      * td のテンプレートセット
      *
+     * @test
      * @param  string  $template
      * @return self
      */

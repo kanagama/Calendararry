@@ -7,11 +7,13 @@ use Carbon\Carbon;
 final class CalendararConst
 {
     /**
+     * @static
      * @var int
      */
     public const SUNDAY = 7;
 
     /**
+     * @static
      * @var array<int,string>
      */
     public const WEEKS = [
@@ -26,6 +28,7 @@ final class CalendararConst
     ];
 
     /**
+     * @static
      * @var array<string,array<int,string>>
      */
     public const HEADER_ENCODING = [

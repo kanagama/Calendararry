@@ -889,87 +889,87 @@ Calendarar::thisMonth()->getEndDatetime();
 
 <br>
 
-### startAddYear(int $add)
+### addStartYear(int $add)
 
 カレンダー開始年を $add 年分進める
 
 #### example
 ```php
-Calendarar::startAddYear(1);
+Calendarar::addStartYear(1);
 ```
 
 <br>
 
-### endAddYear(int $add)
+### addEndYear(int $add)
 
 カレンダー終了年を $add 年分進める
 
 #### example
 ```php
-Calendarar::endAddYear(1);
+Calendarar::addEndYear(1);
 ```
 
 <br>
 
-### startSubYear(int $sub)
+### subStartYear(int $sub)
 
 カレンダー開始年を $sub 年分戻す
 
 #### example
 ```php
-Calendarar::startSubYear(1);
+Calendarar::subStartYear(1);
 ```
 
 <br>
 
-### endSubYear(int $sub)
+### subEndYear(int $sub)
 
 カレンダー終了年を $sub 年分戻す
 
 #### example
 ```php
-Calendarar::endSubYear(1);
+Calendarar::subEndYear(1);
 ```
 
 <br>
 
-### startAddMonth(int $add)
+### addStartMonth(int $add)
 
 カレンダー開始月を $add 月分進める
 
 ```php
-Calendarar::startAddMonth(1);
+Calendarar::addStartMonth(1);
 ```
 
 <br>
 
-### endAddMonth(int $add)
+### addEndMonth(int $add)
 
 カレンダー終了月を $add 月分進める
 
 #### example
 ```php
-Calendarar::endAddMonth(1);
+Calendarar::addEndMonth(1);
 ```
 
 <br>
 
-### startSubMonth(int $sub)
+### subStartMonth(int $sub)
 
 カレンダー開始月を $sub 月分戻す
 
 #### example
 ```php
-Calendarar::startSubMonth(1);
+Calendarar::subStartMonth(1);
 ```
 
 <br>
 
-### endSubMonth(int $sub)
+### subEndMonth(int $sub)
 
 カレンダー終了月を $sub 月分戻す
 
 #### example
 ```php
-Calendarar::endSubMonth(1);
+Calendarar::subEndMonth(1);
 ```
