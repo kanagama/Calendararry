@@ -140,7 +140,7 @@ final class Calendarar
         Deprecated::deprecatedMessage($callMethod);
 
         if (method_exists($this, $callMethod) === true) {
-            return call_user_func_array([$this, $callMethod,], $args);
+            return $this->{$callMethod}(...$args);
         }
     }
 
@@ -157,10 +157,10 @@ final class Calendarar
         Deprecated::deprecatedMessage($callMethod);
 
         $instance = new self();
-        call_user_func_array([$instance, 'reset',], []);
+        $instance->reset();
 
         if (method_exists($instance, $callMethod) === true) {
-            return call_user_func_array([$instance, $callMethod,], $args);
+            return $instance->{$callMethod}(...$args);
         }
     }
 
@@ -539,7 +539,7 @@ final class Calendarar
                 $day = 0;
                 for ($week = 1; $week <= 6; $week++) {
                     // 前の週の最後の日を取得する
-                    if (!empty($weeks[$week - 1][$this->lastDayOfWeekNo()]['day'])) {
+                    if (empty($weeks[$week - 1][$this->lastDayOfWeekNo()]['day']) === false) {
                         $day = $weeks[$week - 1][$this->lastDayOfWeekNo()]['day'];
                     }
                     if ($day < 31) {
@@ -561,15 +561,19 @@ final class Calendarar
                 // 第1,5,6週について日付の正当性をチェック
                 // 存在しない日付は空にする
                 for ($dayOfWeek = $this->firstDayOfWeekNo(); $dayOfWeek <= $this->lastDayOfWeekNo(); $dayOfWeek++) {
-                    if (!array_key_exists($dayOfWeek, $weeks[1])) {
+                    if (array_key_exists($dayOfWeek, $weeks[1]) === false) {
                         $weeks[1][$dayOfWeek] = [];
                     }
 
-                    if (!checkdate(sprintf('%02d', $month), $weeks[5][$dayOfWeek]['day'], $year)) {
+                    if (checkdate(sprintf('%02d', $month), $weeks[5][$dayOfWeek]['day'], $year) === false) {
                         $weeks[5][$dayOfWeek] = [];
                     }
 
-                    if (!empty($weeks[6]) && !checkdate(sprintf('%02d', $month), $weeks[6][$dayOfWeek]['day'], $year)) {
+                    if (
+                        empty($weeks[6]) === false
+                        &&
+                        checkdate(sprintf('%02d', $month), $weeks[6][$dayOfWeek]['day'], $year) === false
+                    ) {
                         $weeks[6][$dayOfWeek] = [];
                     }
                 }
@@ -577,7 +581,7 @@ final class Calendarar
                 // 第5,6週が存在するかチェックする
                 for ($week = 5; $week <= 6; $week++) {
                     // 存在しなければ削除
-                    if (empty($weeks[$week][$this->firstDayOfWeekNo()])) {
+                    if (empty($weeks[$week][$this->firstDayOfWeekNo()]) === true) {
                         unset($weeks[$week]);
                     }
                 }
@@ -632,7 +636,7 @@ final class Calendarar
                     $html .=  '<tr class="week' . $week . '">';
                     foreach ($weeks as $dayOfWeek => $day) {
                         $html .=  '<td class="' . CalendararConst::WEEKS[$dayOfWeek] . ' ' . $this->setDayClass($day) . '">';
-                        $html .= !empty($day['day'])
+                        $html .= (empty($day['day']) === false)
                             ? $this->tdTemplate($day['day'])
                             : '';
                         $html .= '</td>';
