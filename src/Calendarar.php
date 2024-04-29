@@ -139,8 +139,8 @@ final class Calendarar
     {
         Deprecated::deprecatedMessage($callMethod);
 
-        if (method_exists($this, $callMethod)) {
-            return call_user_func_array(array($this, $callMethod), $args);
+        if (method_exists($this, $callMethod) === true) {
+            return call_user_func_array([$this, $callMethod,], $args);
         }
     }
 
@@ -156,11 +156,11 @@ final class Calendarar
     {
         Deprecated::deprecatedMessage($callMethod);
 
-        $instance = new self(Carbon::now(), Carbon::now());
-        call_user_func_array(array($instance, 'reset'), []);
+        $instance = new self();
+        call_user_func_array([$instance, 'reset',], []);
 
-        if (method_exists($instance, $callMethod)) {
-            return call_user_func_array(array($instance, $callMethod), $args);
+        if (method_exists($instance, $callMethod) === true) {
+            return call_user_func_array([$instance, $callMethod,], $args);
         }
     }
 
