@@ -131,15 +131,14 @@ final class Calendarar
      * 動的呼び出し
      *
      * @test
-     * @param  string  $name
+     * @param  string  $callMethod
      * @param  array  $args
      * @return mixed
      */
-    public function __call($name, $args)
+    public function __call($callMethod, $args)
     {
-        Deprecated::deprecatedMessage($name);
+        Deprecated::deprecatedMessage($callMethod);
 
-        $callMethod = '_' . $name;
         if (method_exists($this, $callMethod)) {
             return call_user_func_array(array($this, $callMethod), $args);
         }
@@ -149,18 +148,17 @@ final class Calendarar
      * 静的呼び出し
      *
      * @test
-     * @param  string  $name
+     * @param  string  $callMethod
      * @param  array  $args
      * @return mixed
      */
-    public static function __callStatic($name, $args)
+    public static function __callStatic($callMethod, $args)
     {
-        Deprecated::deprecatedMessage($name);
+        Deprecated::deprecatedMessage($callMethod);
 
         $instance = new self(Carbon::now(), Carbon::now());
         call_user_func_array(array($instance, 'reset'), []);
 
-        $callMethod = '_' . $name;
         if (method_exists($instance, $callMethod)) {
             return call_user_func_array(array($instance, $callMethod), $args);
         }
@@ -185,7 +183,7 @@ final class Calendarar
      * @param  mixed  $start
      * @return self
      */
-    private function _setStartMonth($start): self
+    private function setStartMonth($start): self
     {
         $carbon = new Carbon();
         if (empty($start) === false) {
@@ -203,7 +201,7 @@ final class Calendarar
      * @param  mixed  $end
      * @return self
      */
-    private function _setEndMonth($end): self
+    private function setEndMonth($end): self
     {
         $carbon = new Carbon();
         if (empty($end) === false) {
@@ -224,7 +222,7 @@ final class Calendarar
      * @param  mixed  $end
      * @return self
      */
-    private function _set($start, $end): self
+    private function set($start, $end): self
     {
         $this->__construct($start, $end);
 
@@ -237,7 +235,7 @@ final class Calendarar
      * @test
      * @return self
      */
-    private function _startOfMonday(): self
+    private function startOfMonday(): self
     {
         $this->mondayStart = true;
 
@@ -250,7 +248,7 @@ final class Calendarar
      * @test
      * @return self
      */
-    private function _startOfSunday(): self
+    private function startOfSunday(): self
     {
         $this->mondayStart = false;
 
@@ -263,7 +261,7 @@ final class Calendarar
      * @test
      * @return self
      */
-    private function _thisMonth(): self
+    private function thisMonth(): self
     {
         $this->resetStartDatetime();
         $this->resetEndDatetime();
@@ -277,7 +275,7 @@ final class Calendarar
      * @test
      * @return self
      */
-    private function _lastMonth(): self
+    private function lastMonth(): self
     {
         $this->startDatetime = Carbon::now()->subMonth()->startOfMonth();
         $this->endDatetime = Carbon::now()->subMonth()->endOfMonth();
@@ -291,7 +289,7 @@ final class Calendarar
      * @test
      * @return self
      */
-    private function _nextMonth(): self
+    private function nextMonth(): self
     {
         $this->startDatetime = Carbon::now()->addMonth()->startOfMonth();
         $this->endDatetime = Carbon::now()->addMonth()->endOfMonth();
@@ -305,7 +303,7 @@ final class Calendarar
      * @test
      * @return self
      */
-    private function _oneYear(): self
+    private function oneYear(): self
     {
         $this->startDatetime = Carbon::now()->startOfMonth();
         $this->endDatetime = Carbon::now()->addMonths(11)->endOfMonth();
@@ -320,7 +318,7 @@ final class Calendarar
      * @param  int  $add
      * @return self
      */
-    private function _addStartYear(int $add): self
+    private function addStartYear(int $add): self
     {
         $this->reset();
 
@@ -336,7 +334,7 @@ final class Calendarar
      * @param  int  $add
      * @return self
      */
-    private function _addEndYear(int $add): self
+    private function addEndYear(int $add): self
     {
         $this->reset();
 
@@ -352,7 +350,7 @@ final class Calendarar
      * @param  int  $sub
      * @return self
      */
-    private function _subStartYear(int $sub): self
+    private function subStartYear(int $sub): self
     {
         $this->reset();
 
@@ -368,7 +366,7 @@ final class Calendarar
      * @param  int  $sub
      * @return self
      */
-    private function _subEndYear(int $sub): self
+    private function subEndYear(int $sub): self
     {
         $this->reset();
 
@@ -384,7 +382,7 @@ final class Calendarar
      * @param  int  $add
      * @return self
      */
-    private function _addStartMonth(int $add): self
+    private function addStartMonth(int $add): self
     {
         $this->reset();
 
@@ -400,7 +398,7 @@ final class Calendarar
      * @param  int  $add
      * @return self
      */
-    private function _addEndMonth(int $add): self
+    private function addEndMonth(int $add): self
     {
         $this->reset();
 
@@ -416,7 +414,7 @@ final class Calendarar
      * @param  int  $sub
      * @return self
      */
-    private function _subStartMonth(int $sub): self
+    private function subStartMonth(int $sub): self
     {
         $this->reset();
 
@@ -432,7 +430,7 @@ final class Calendarar
      * @param  int  $sub
      * @return self
      */
-    private function _subEndMonth(int $sub): self
+    private function subEndMonth(int $sub): self
     {
         $this->reset();
 
@@ -445,7 +443,7 @@ final class Calendarar
      * @test
      * @return string
      */
-    private function _getStartDatetime(): string
+    private function getStartDatetime(): string
     {
         $this->reset();
 
@@ -456,7 +454,7 @@ final class Calendarar
      * @test
      * @return string
      */
-    private function _getEndDatetime(): string
+    private function getEndDatetime(): string
     {
         $this->reset();
 
@@ -471,7 +469,7 @@ final class Calendarar
      * @param  mixed  $data
      * @return self
      */
-    private function _setDay(int $year, int $month, int $day, mixed $data): self
+    private function setDay(int $year, int $month, int $day, mixed $data): self
     {
         $this->dayData[$year][$month][$day] = $data;
 
@@ -483,7 +481,7 @@ final class Calendarar
      * @param string $encoding
      * @return self
      */
-    private function _setEncoding(string $encoding)
+    private function setEncoding(string $encoding)
     {
         if (in_array($encoding, array_keys(CalendararConst::HEADER_ENCODING), true)) {
             $this->encoding = $encoding;
@@ -499,11 +497,11 @@ final class Calendarar
      * @return array
      * @throws RuntimeException
      */
-    private function _create(): array
+    private function create(): array
     {
         $this->reset();
 
-        if ((int) $this->startDatetime->format('Ymd') > (int) $this->endDatetime->format('Ymd')) {
+        if ($this->startDatetime->gt($this->endDatetime) === true) {
             throw new RuntimeException('開始日が終了日よりも後になっています。');
         }
 
@@ -600,7 +598,7 @@ final class Calendarar
      * @test
      * @return string
      */
-    private function _html(): string
+    private function html(): string
     {
         $html = '';
         foreach ($this->create() as $year => $years) {
@@ -656,7 +654,7 @@ final class Calendarar
      * @param  string  $template
      * @return self
      */
-    private function _setTrTemplate(string $template): self
+    private function setTrTemplate(string $template): self
     {
         $this->trTemplate = $template;
 
@@ -670,7 +668,7 @@ final class Calendarar
      * @param  string  $template
      * @return self
      */
-    private function _setTdTemplate(string $template): self
+    private function setTdTemplate(string $template): self
     {
         $this->tdTemplate = $template;
 
