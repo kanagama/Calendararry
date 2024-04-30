@@ -823,6 +823,22 @@ Calendarar::thisMonth()
 
 <br>
 
+### setStartMonth(mixed $start)
+
+カレンダー開始月を設定する
+
+※月初に変換されます
+
+<br>
+
+### setEndMonth(mixed $end)
+
+カレンダー終了月を設定する
+
+※月末に変換されます
+
+<br>
+
 ### thisMonth()
 
 今月１ヶ月分のカレンダーを設定

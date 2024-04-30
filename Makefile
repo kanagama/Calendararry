@@ -1,11 +1,23 @@
 test-build:
-	docker-compose -f docker-compose-test.yml build --no-cache
+	docker compose -f compose-test.yml build --no-cache
 
-test:
-	docker-compose -f docker-compose-test.yml up
+unit-test74:
+	docker compose -f compose-test74.yml up
+
+unit-test80:
+	docker compose -f compose-test80.yml up
+
+unit-test81:
+	docker compose -f compose-test81.yml up
+
+unit-test82:
+	docker compose -f compose-test82.yml up
+
+unit-test83:
+	docker compose -f compose-test83.yml up
 
 development-build:
-	docker-compose -f docker-compose.yml build --no-cache
+	docker compose -f compose.yml build --no-cache
 
 development:
-	docker-compose -f docker-compose.yml up
+	docker compose -f compose.yml up

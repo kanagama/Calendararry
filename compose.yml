@@ -1,6 +1,5 @@
-version: "3.8"
 services:
-  php74_holidays_development:
+  php74_calendarar_development:
     container_name: php74_calendarar_development
     build:
       context: .
