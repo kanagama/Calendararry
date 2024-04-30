@@ -21,6 +21,7 @@ use RuntimeException;
  * @method string getStartDatetime() 開始日を取得する
  * @method string getEndDatetime() 終了日を取得する
  * @method self set(mixed $start, mixed $end) 開始日と終了日を設定する
+ * @method self setDay(int $year, int $month, int $day, mixed $data) 日付にデータを設定する
  * @method self thisMonth() 今月分に設定
  * @method self lastMonth() 先月分に設定
  * @method self nextMonth() 来月分に設定
@@ -42,6 +43,7 @@ use RuntimeException;
  * @method static string getStartDatetime() 開始日を取得する
  * @method static string getEndDatetime() 終了日を取得する
  * @method static self set(mixed $start, mixed $end) 開始日と終了日を設定する
+ * @method static self setDay(int $year, int $month, int $day, mixed $data) 日付にデータを設定する
  * @method static self thisMonth() 今月分に設定
  * @method static self lastMonth() 先月分に設定
  * @method static self nextMonth() 来月分に設定
