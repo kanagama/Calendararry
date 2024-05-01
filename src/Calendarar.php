@@ -13,6 +13,8 @@ use RuntimeException;
 /**
  * カレンダー配列を生成する
  *
+ * @method self showAdjacentDays() 第1週と最終週にある空白を、先月と来月の日付で埋める
+ * @method self hideAdjacentDays() 第1週と最終週にある空白を、先月と来月の日付で埋めない
  * @method self startOfMonday() 週の始めを月曜日に設定
  * @method self startOfSunday() 週の始めを日曜日に設定
  * @method self setStartMonth(mixed $start) 開始月を設定する
@@ -35,6 +37,8 @@ use RuntimeException;
  * @method self subStartMonth(int $sub) 開始日に $sub ヶ月分減算する
  * @method self subEndMonth(int $sub) 終了日に $sub ヶ月分減算する
  *
+ * @method static self showAdjacentDays() 第1週と最終週にある空白を、先月と来月の日付で埋める
+ * @method static self hideAdjacentDays() 第1週と最終週にある空白を、先月と来月の日付で埋めない
  * @method static self startOfMonday() 週の始めを月曜日に設定
  * @method static self startOfSunday() 週の始めを日曜日に設定
  * @method static self setStartMonth(mixed $start) 開始月を設定する
@@ -111,6 +115,13 @@ final class Calendarar
      * @var array
      */
     private array $dayData = [];
+
+    /**
+     * 第1週と最終週にある空白を、先月と来月の日付で埋めるか
+     *
+     * @var bool
+     */
+    private bool $adjacentDays = false;
 
     /**
      * @test
@@ -227,6 +238,30 @@ final class Calendarar
     private function set($start, $end): self
     {
         $this->__construct($start, $end);
+
+        return $this;
+    }
+
+    /**
+     * 第1週と最終週にある空白を先月・来月の日付で埋める
+     *
+     * @return self
+     */
+    private function showAdjacentDays(): self
+    {
+        $this->adjacentDays = true;
+
+        return $this;
+    }
+
+    /**
+     * 第1週と最終週にある空白を先月・来月の日付で埋めない
+     *
+     * @return self
+     */
+    private function hideAdjacentDays(): self
+    {
+        $this->adjacentDays = false;
 
         return $this;
     }
