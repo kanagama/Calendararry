@@ -23,7 +23,7 @@ trait DeprecatedMethod
      * @param  int  $add
      * @return self
      */
-    private function _startAddYear(int $add): self
+    private function startAddYear(int $add): self
     {
         return $this->addStartYear($add);
     }
@@ -35,7 +35,7 @@ trait DeprecatedMethod
      * @param  int  $add
      * @return self
      */
-    private function _endAddYear(int $add): self
+    private function endAddYear(int $add): self
     {
         return $this->addEndYear($add);
     }
@@ -47,7 +47,7 @@ trait DeprecatedMethod
      * @param  int  $sub
      * @return self
      */
-    private function _startSubYear(int $sub): self
+    private function startSubYear(int $sub): self
     {
         return $this->subStartYear($sub);
     }
@@ -59,7 +59,7 @@ trait DeprecatedMethod
      * @param  int  $sub
      * @return self
      */
-    private function _endEndYear(int $sub): self
+    private function endEndYear(int $sub): self
     {
         return $this->subEndYear($sub);
     }
@@ -71,7 +71,7 @@ trait DeprecatedMethod
      * @param  int  $add
      * @return self
      */
-    private function _startAddMonth(int $add): self
+    private function startAddMonth(int $add): self
     {
         return $this->addStartMonth($add);
     }
@@ -83,7 +83,7 @@ trait DeprecatedMethod
      * @param  int  $add
      * @return self
      */
-    private function _endAddMonth(int $add): self
+    private function endAddMonth(int $add): self
     {
         return $this->addEndMonth($add);
     }
@@ -95,7 +95,7 @@ trait DeprecatedMethod
      * @param  int  $sub
      * @return self
      */
-    private function _startSubMonth(int $sub): self
+    private function startSubMonth(int $sub): self
     {
         return $this->subStartMonth($sub);
     }
@@ -107,7 +107,7 @@ trait DeprecatedMethod
      * @param  int  $sub
      * @return self
      */
-    private function _endSubMonth(int $sub): self
+    private function endSubMonth(int $sub): self
     {
         return $this->subEndMonth($sub);
     }
