@@ -15,6 +15,8 @@ use RuntimeException;
  *
  * @method self startOfMonday() 週の始めを月曜日に設定
  * @method self startOfSunday() 週の始めを日曜日に設定
+ * @method self isStartOfMonday() カレンダー開始週が月曜か判定する
+ * @method self isStartOfSunday() カレンダー開始週が日曜か判定する
  * @method self setStartMonth(mixed $start) 開始月を設定する
  * @method self setEndMonth(mixed $end) 終了月を設定する
  * @method array create() カレンダー配列を作成する
@@ -37,6 +39,8 @@ use RuntimeException;
  *
  * @method static self startOfMonday() 週の始めを月曜日に設定
  * @method static self startOfSunday() 週の始めを日曜日に設定
+ * @method static self isStartOfMonday() カレンダー開始週が月曜か判定する
+ * @method static self isStartOfSunday() カレンダー開始週が日曜か判定する
  * @method static self setStartMonth(mixed $start) 開始月を設定する
  * @method static self setEndMonth(mixed $end) 終了月を設定する
  * @method static array create() カレンダー配列を作成する
@@ -229,6 +233,30 @@ final class Calendarar
         $this->__construct($start, $end);
 
         return $this;
+    }
+
+    /**
+     * カレンダー開始週が月曜か判定する
+     *
+     * @return bool
+     */
+    private function isStartOfMonday(): bool
+    {
+        return (
+            $this->mondayStart === true
+        );
+    }
+
+    /**
+     * カレンダー開始週が日曜か判定する
+     *
+     * @return bool
+     */
+    private function isStartOfSunday(): bool
+    {
+        return (
+            $this->mondayStart === false
+        );
     }
 
     /**
@@ -528,9 +556,11 @@ final class Calendarar
             // 月ループ
             for ($month = $startMonth; $month <= $endMonth; $month++) {
                 // 該当月の1日の曜日番号を取得
-                $firstWeekNo = (int) date('w', mktime(0, 0, 0, sprintf('%02d', $month), 1, $year));
+                $firstWeekNo =
+                $startWeekNo = (int) date('w', mktime(0, 0, 0, sprintf('%02d', $month), 1, $year));
                 if ($firstWeekNo === Carbon::SUNDAY) {
-                    $firstWeekNo = $this->firstDayOfWeekNo();
+                    $firstWeekNo = CalendararConst::SUNDAY;
+                    $startWeekNo = $this->firstDayOfWeekNo();
                 }
 
                 $weeks = [];
@@ -540,12 +570,29 @@ final class Calendarar
 
                 $day = 0;
                 for ($week = 1; $week <= 6; $week++) {
+                    // 月の最初が日曜の場合の制御を入れる
+                    if ($firstWeekNo === CalendararConst::SUNDAY && $this->isStartOfMonday()) {
+                        for ($dayOfWeek = $firstWeekNo; $dayOfWeek <= $this->lastDayOfWeekNo(); $dayOfWeek++) {
+                            $weeks[$week][$dayOfWeek] = [
+                                'year'      => $year,
+                                'month'     => $month,
+                                'day'       => 1,
+                                'week'      => $week,
+                                'dayOfWeek' => $dayOfWeek,
+                                'data'      => $this->dayData[$year][$month][1] ?? [],
+                            ];
+                        }
+
+                        $firstWeekNo = $this->firstDayOfWeekNo();
+                        continue;
+                    }
+
                     // 前の週の最後の日を取得する
                     if (empty($weeks[$week - 1][$this->lastDayOfWeekNo()]['day']) === false) {
                         $day = $weeks[$week - 1][$this->lastDayOfWeekNo()]['day'];
                     }
                     if ($day < 31) {
-                        for ($dayOfWeek = $firstWeekNo; $dayOfWeek <= $this->lastDayOfWeekNo(); $dayOfWeek++) {
+                        for ($dayOfWeek = $startWeekNo; $dayOfWeek <= $this->lastDayOfWeekNo(); $dayOfWeek++) {
                             $day++;
                             $weeks[$week][$dayOfWeek] = [
                                 'year'      => $year,
@@ -557,7 +604,7 @@ final class Calendarar
                             ];
                         }
                     }
-                    $firstWeekNo = $this->firstDayOfWeekNo();
+                    $startWeekNo = $this->firstDayOfWeekNo();
                 }
 
                 // 第1,5,6週について日付の正当性をチェック
