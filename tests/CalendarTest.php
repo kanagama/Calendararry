@@ -5,6 +5,7 @@ namespace Tests\Unit\Kanagama\Calendarar;
 use Carbon\Carbon;
 use DomDocument;
 use Kanagama\Calendarar\Calendarar;
+use Kanagama\Calendarar\Consts\CalendararConst;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -527,5 +528,82 @@ final class CalendarTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         Calendarar::subEndMonth(1)->create();
+    }
+
+    /**
+     * @test
+     */
+    public function 週開始が月曜の場合、日曜から始まる月が正しく設定されること()
+    {
+        $object = $this->calendarar
+            ->startOfMonDay()
+            ->set('2024-09-01', '2024-09-30');
+
+        $calendar = $object->create();
+
+        // 月の初日が日曜であること
+        $this->assertSame($calendar[2024][9][1][7]['day'], 1);
+        $this->assertSame($calendar[2024][9][1][7]['dayOfWeek'], CalendararConst::SUNDAY);
+        // 月の最終日が月曜であること
+        $this->assertSame($calendar[2024][9][6][1]['day'], 30);
+        $this->assertSame($calendar[2024][9][6][1]['dayOfWeek'], Carbon::MONDAY);
+    }
+
+    /**
+     * @test
+     */
+    public function 週開始が日曜の場合、日曜から始まる月が正しく設定されること()
+    {
+        $object = $this->calendarar
+            ->startOfSunday()
+            ->set('2024-09-01', '2024-09-30');
+
+        $calendar = $object->create();
+
+        // 月の初日が日曜であること
+        $this->assertSame($calendar[2024][9][1][0]['day'], 1);
+        $this->assertSame($calendar[2024][9][1][0]['dayOfWeek'], Carbon::SUNDAY);
+        // 月の最終日が月曜であること
+        $this->assertSame($calendar[2024][9][5][1]['day'], 30);
+        $this->assertSame($calendar[2024][9][5][1]['dayOfWeek'], Carbon::MONDAY);
+    }
+
+    /**
+     * @test
+     */
+    public function 週開始が月曜の場合、月曜から始まる月が正しく設定されること()
+    {
+        $object = $this->calendarar
+            ->startOfMonday()
+            ->set('2024-01-01', '2024-01-30');
+
+        $calendar = $object->create();
+
+        // 月の初日が月曜であること
+        $this->assertSame($calendar[2024][1][1][1]['day'], 1);
+        $this->assertSame($calendar[2024][1][1][1]['dayOfWeek'], Carbon::MONDAY);
+        // 月の最終日が水曜であること
+        $this->assertSame($calendar[2024][1][5][3]['day'], 31);
+        $this->assertSame($calendar[2024][1][5][3]['dayOfWeek'], Carbon::WEDNESDAY);
+    }
+
+    /**
+     * @test
+     * @group fix
+     */
+    public function 週開始が日曜の場合、月曜から始まる月が正しく設定されること()
+    {
+        $object = $this->calendarar
+            ->startOfSunday()
+            ->set('2024-01-01', '2024-01-30');
+
+        $calendar = $object->create();
+
+        // 月の初日が月曜であること
+        $this->assertSame($calendar[2024][1][1][1]['day'], 1);
+        $this->assertSame($calendar[2024][1][1][1]['dayOfWeek'], Carbon::MONDAY);
+        // 月の最終日が水曜であること
+        $this->assertSame($calendar[2024][1][5][3]['day'], 31);
+        $this->assertSame($calendar[2024][1][5][3]['dayOfWeek'], Carbon::WEDNESDAY);
     }
 }

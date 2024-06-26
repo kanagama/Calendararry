@@ -446,6 +446,14 @@ Calendarar::thisMonth()
 
 <br>
 
+### isStartOfMonday()
+
+カレンダーの週の始まりが月曜か判定する
+
+### isStartOfSunday()
+
+カレンダーの週の始まりが日曜か判定する
+
 ### setEncoding
 
 html() で出力する table.thead.tr.th の内容を ja, en で指定する
