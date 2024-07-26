@@ -9,6 +9,9 @@ use Kanagama\Calendarar\Consts\CalendararConst;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+/**
+ * カレンダーテスト
+ */
 final class CalendarTest extends TestCase
 {
     /**
